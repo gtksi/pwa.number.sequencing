@@ -12,7 +12,7 @@ import './App.css';
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading } = useSelector((state: RootState) => state.user);
-  const { phase } = useSelector((state: RootState) => state.game);
+  const { phase, currentTrial } = useSelector((state: RootState) => state.game);
   const { startNextTrial } = useGameLogic();
 
   useEffect(() => {
@@ -43,9 +43,11 @@ function App() {
     return <div className="loading">Loading...</div>;
   }
 
+  const isGameActive = phase === 'memorize' || phase === 'recall' || (phase === 'idle' && currentTrial > 0);
+
   return (
     <div className="app-container">
-      {phase === 'idle' && (
+      {phase === 'idle' && currentTrial === 0 && (
         <div className="start-screen">
           <h1>数字の逆さま記憶ゲーム</h1>
           <p>ワーキングメモリートレーニング</p>
@@ -58,7 +60,7 @@ function App() {
         </div>
       )}
       
-      {(phase === 'memorize' || phase === 'recall') && <GameCanvas />}
+      {isGameActive && <GameCanvas />}
 
       {phase === 'result' && <ResultScreen />}
     </div>
