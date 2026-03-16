@@ -51,6 +51,9 @@ const GameCanvas = () => {
       }
       pixiApp.current = app;
 
+      app.stage.eventMode = 'static';
+      app.stage.hitArea = app.screen;
+
       const sceneContainer = new PIXI.Container();
       app.stage.addChild(sceneContainer);
       
@@ -148,7 +151,13 @@ const GameCanvas = () => {
         const totalWidth = expectedAnswers.length * slotSize + (expectedAnswers.length - 1) * spacing;
         const startX = 400 - totalWidth / 2 + slotSize / 2;
 
-        const slots: any[] = [];
+        interface Slot {
+          expected: number;
+          filled: boolean;
+          x: number;
+          y: number;
+        }
+        const slots: Slot[] = [];
         for (let i = 0; i < expectedAnswers.length; i++) {
           const slot = new PIXI.Graphics();
           slot.roundRect(-slotSize/2, -slotSize/2, slotSize, slotSize, 10).stroke({width: 4, color: 0x555555});
@@ -187,17 +196,20 @@ const GameCanvas = () => {
           let dragStartPoint = { x: 0, y: 0 };
           let cardStartPoint = { x: 0, y: 0 };
 
-          card.on('pointerdown', (e) => {
-            dragging = true;
-            dragStartPoint = { x: e.global.x, y: e.global.y };
-            cardStartPoint = { x: card.x, y: card.y };
-            card.zIndex = 100;
-            sceneContainer.sortChildren();
-          });
+          const onDragMove = (e: PIXI.FederatedPointerEvent) => {
+            if (dragging) {
+               card.x = cardStartPoint.x + (e.global.x - dragStartPoint.x);
+               card.y = cardStartPoint.y + (e.global.y - dragStartPoint.y);
+            }
+          };
 
-          card.on('pointerup', () => {
+          const onDragEnd = () => {
              if (!dragging) return;
              dragging = false;
+             app.stage.off('pointermove', onDragMove);
+             app.stage.off('pointerup', onDragEnd);
+             app.stage.off('pointerupoutside', onDragEnd);
+
              const nextSlot = slots.find(s => !s.filled);
              if (nextSlot) {
                const dx = card.x - nextSlot.x;
@@ -228,14 +240,20 @@ const GameCanvas = () => {
                }
              }
              card.x = initialX; card.y = initialY;
+          };
+
+          card.on('pointerdown', (e) => {
+            dragging = true;
+            dragStartPoint = { x: e.global.x, y: e.global.y };
+            cardStartPoint = { x: card.x, y: card.y };
+            card.zIndex = 100;
+            sceneContainer.sortChildren();
+            
+            app.stage.on('pointermove', onDragMove);
+            app.stage.on('pointerup', onDragEnd);
+            app.stage.on('pointerupoutside', onDragEnd);
           });
-          card.on('pointerupoutside', (e) => card.emit('pointerup', e));
-          card.on('pointermove', (e) => {
-            if (dragging) {
-               card.x = cardStartPoint.x + (e.global.x - dragStartPoint.x);
-               card.y = cardStartPoint.y + (e.global.y - dragStartPoint.y);
-            }
-          });
+
           sceneContainer.addChild(card);
         }
         sceneContainer.sortableChildren = true;
@@ -260,7 +278,7 @@ const GameCanvas = () => {
       
       // Handle initial phase on mount
       if (lastPhase === 'memorize') renderMemorizePhase();
-      else if (lastPhase === 'recall') renderRecallPhase();
+      if (lastPhase === 'recall') renderRecallPhase();
     };
 
     init();
@@ -272,7 +290,6 @@ const GameCanvas = () => {
         pixiApp.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]); // Stable dependencies to prevent re-initializing Pixi app
 
   return <div ref={canvasRef} className="game-canvas" />;
