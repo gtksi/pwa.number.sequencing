@@ -50,7 +50,10 @@ const ResultScreen = () => {
         </div>
       </div>
 
-      <button onClick={() => dispatch(setPhase('idle'))}>
+      <button 
+        onPointerDown={() => dispatch(setPhase('idle'))}
+        style={{ touchAction: 'manipulation' }}
+      >
         トップへ戻る
       </button>
     </div>

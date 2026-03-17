@@ -79,6 +79,7 @@ html, body {
   font-weight: 600;
   border-radius: 16px;
   cursor: pointer;
+  touch-action: manipulation;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
   display: flex;
