@@ -55,10 +55,10 @@ WISC-Vの「数唱（順唱・逆唱）」および「配列（語音整列の�
 ## 3. 技術スタック (Technical Stack)
 
 * アーキテクチャ: PWA (Progressive Web App)
-* フロントエンド: TypeScript + React
+* フロントエンド: Blazor WebAssembly または React/Vue.js
 * 描画エンジン: PixiJS (WebGL) - ドラッグ＆ドロップ時の滑らかな吸着アニメーションや物理的挙動用
-* 状態管理: Redux Toolkit（流暢性スコアや移動平均の高速計算）
-* データ永続化: IndexedDB (Dexie.js)
+* 状態管理: Redux/Vuex 等（流暢性スコアや移動平均の高速計算）
+* データ永続化: IndexedDB (ブラウザ内DB)
 
 ---
 

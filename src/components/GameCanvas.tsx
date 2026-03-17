@@ -127,17 +127,30 @@ const GameCanvas = () => {
 
       const renderRecallPhase = () => {
         sceneContainer.removeChildren();
-        const { sequence, dummyCards } = stateRef.current;
+        const { sequence, dummyCards, taskMode } = stateRef.current;
         
+        let instructionText = '';
+        let expectedAnswers: number[] = [];
+
+        if (taskMode === 'forward') {
+          instructionText = '元の順番で枠に入れてね';
+          expectedAnswers = [...sequence];
+        } else if (taskMode === 'backward') {
+          instructionText = '逆の順番で枠に入れてね';
+          expectedAnswers = [...sequence].reverse();
+        } else if (taskMode === 'sequencing') {
+          instructionText = '小さい順に枠に入れてね';
+          expectedAnswers = [...sequence].sort((a, b) => a - b);
+        }
+
         const infoText = new PIXI.Text({
-          text: '逆の順番で枠に入れてね',
+          text: instructionText,
           style: { fontFamily: 'Arial', fontSize: 24, fill: 0xaaaaaa }
         });
         infoText.x = 400; infoText.y = 50;
         infoText.anchor.set(0.5);
         sceneContainer.addChild(infoText);
 
-        const expectedAnswers = [...sequence].reverse();
         const allCards = [...sequence];
         for (let i = 0; i < dummyCards; i++) {
            let dummy;

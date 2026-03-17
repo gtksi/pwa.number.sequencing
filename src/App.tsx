@@ -22,8 +22,11 @@ function App() {
         user = {
           id: 'user',
           age_months: 120, // default ~10 years old
-          current_sub_level: '1.1',
-          highest_digits: 2,
+          stats: {
+            forward: { current_sub_level: '1.1', highest_digits: 2 },
+            backward: { current_sub_level: '1.1', highest_digits: 2 },
+            sequencing: { current_sub_level: '1.1', highest_digits: 2 },
+          },
           current_percentile: 50,
           total_wm_score: 0,
           settings: {
@@ -49,14 +52,28 @@ function App() {
     <div className="app-container">
       {phase === 'idle' && currentTrial === 0 && (
         <div className="start-screen">
-          <h1>数字の逆さま記憶ゲーム</h1>
+          <h1>数字の記憶と操作ゲーム</h1>
           <p>ワーキングメモリートレーニング</p>
-          <button onClick={() => {
-            dispatch(startGameSession());
-            startNextTrial();
-          }}>
-            トレーニングを開始する
-          </button>
+          <div className="mode-selection" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
+            <button onClick={() => {
+              dispatch(startGameSession({ taskMode: 'forward' }));
+              startNextTrial('forward');
+            }}>
+              順唱 (Forward)
+            </button>
+            <button onClick={() => {
+              dispatch(startGameSession({ taskMode: 'backward' }));
+              startNextTrial('backward');
+            }}>
+              逆唱 (Backward)
+            </button>
+            <button onClick={() => {
+              dispatch(startGameSession({ taskMode: 'sequencing' }));
+              startNextTrial('sequencing');
+            }}>
+              配列 (Sequencing)
+            </button>
+          </div>
         </div>
       )}
       

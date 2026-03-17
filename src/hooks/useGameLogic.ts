@@ -12,10 +12,12 @@ export const useGameLogic = () => {
   const game = useSelector((state: RootState) => state.game);
   const user = useSelector((state: RootState) => state.user);
 
-  const startNextTrial = useCallback(() => {
+  const startNextTrial = useCallback((overrideMode?: 'forward' | 'backward' | 'sequencing') => {
     if (!user.profile) return;
     
-    const levelDef = getSubLevelDef(user.profile.current_sub_level);
+    const activeMode = overrideMode || game.taskMode;
+    const currentSubLevel = user.profile.stats[activeMode].current_sub_level;
+    const levelDef = getSubLevelDef(currentSubLevel);
     
     // Generate a random sequence (1-9) without immediate repetitions
     const sequence: number[] = [];
@@ -33,12 +35,14 @@ export const useGameLogic = () => {
       displaySpeedMs: levelDef.displaySpeedMs,
       dummyCards: levelDef.dummyCards
     }));
-  }, [dispatch, user.profile]);
+  }, [dispatch, user.profile, game.taskMode]);
 
   const finishTrial = useCallback(async (actualTimeSec: number) => {
     if (!user.profile || game.phase !== 'recall') return;
 
-    const levelDef = getSubLevelDef(user.profile.current_sub_level);
+    const activeMode = game.taskMode;
+    const currentSubLevel = user.profile.stats[activeMode].current_sub_level;
+    const levelDef = getSubLevelDef(currentSubLevel);
     const score = calculateFluencyScore(actualTimeSec, levelDef.targetTimeSec, game.errorsInCurrentTrial);
 
     // Save to IndexedDB
@@ -46,7 +50,8 @@ export const useGameLogic = () => {
       trial_id: `t_${Date.now()}_${Math.floor(Math.random()*1000)}`,
       session_id: `s_${new Date().toISOString().split('T')[0]}`,
       timestamp: new Date().toISOString(),
-      sub_level: user.profile.current_sub_level,
+      task_mode: activeMode,
+      sub_level: currentSubLevel,
       displayed_sequence: game.sequence,
       actual_time_sec: actualTimeSec,
       error_interventions: game.errorsInCurrentTrial,
@@ -57,22 +62,31 @@ export const useGameLogic = () => {
     
     await db.trialLogs.put(trialLog);
 
-    // Fetch recent 3 scores for DDA
-    const recentLogs = await db.trialLogs.orderBy('timestamp').reverse().limit(3).toArray();
-    const recentScores = recentLogs.map(l => l.fluency_score);
-    const nextLevel = determineNextLevel(user.profile.current_sub_level, recentScores);
+    // Fetch recent 3 scores for DDA for this mode
+    const recentLogs = await db.trialLogs.orderBy('timestamp').reverse().toArray();
+    const recentModeLogs = recentLogs.filter((l: any) => l.task_mode === activeMode).slice(0, 3);
+    const recentScores = recentModeLogs.map(l => l.fluency_score);
+    const nextLevel = determineNextLevel(currentSubLevel, recentScores);
 
     const newTotalScore = user.profile.total_wm_score + score;
+    const newHighestDigits = Math.max(user.profile.stats[activeMode].highest_digits, levelDef.digits);
+    
+    const newStats = {
+      ...user.profile.stats,
+      [activeMode]: {
+        current_sub_level: nextLevel,
+        highest_digits: newHighestDigits
+      }
+    };
+
     await db.userProfile.update(user.profile.id, {
-      current_sub_level: nextLevel,
-      total_wm_score: newTotalScore,
-      highest_digits: Math.max(user.profile.highest_digits, levelDef.digits)
+      stats: newStats,
+      total_wm_score: newTotalScore
     });
     
     dispatch(updateUserProfile({
-      current_sub_level: nextLevel,
-      total_wm_score: newTotalScore,
-      highest_digits: Math.max(user.profile.highest_digits, levelDef.digits)
+      stats: newStats,
+      total_wm_score: newTotalScore
     }));
 
     dispatch(completeTrial());

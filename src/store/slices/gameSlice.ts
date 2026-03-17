@@ -1,9 +1,11 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 export type GamePhase = 'idle' | 'memorize' | 'recall' | 'result';
+export type TaskMode = 'forward' | 'backward' | 'sequencing';
 
 interface GameState {
   phase: GamePhase;
+  taskMode: TaskMode;
   currentTrial: number;
   maxTrials: number;
   sequence: number[];
@@ -19,6 +21,7 @@ interface GameState {
 
 const initialState: GameState = {
   phase: 'idle',
+  taskMode: 'backward',
   currentTrial: 0,
   maxTrials: 10, // Fixed session trials
   sequence: [],
@@ -35,8 +38,9 @@ const gameSlice = createSlice({
   name: 'game',
   initialState,
   reducers: {
-    startGameSession(state) {
+    startGameSession(state, action: PayloadAction<{ taskMode: TaskMode }>) {
       state.phase = 'idle';
+      state.taskMode = action.payload.taskMode;
       state.currentTrial = 0;
     },
     startTrial(state, action: PayloadAction<{ sequence: number[], digits: number, displaySpeedMs: number, dummyCards: number }>) {

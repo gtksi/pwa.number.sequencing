@@ -1,11 +1,19 @@
 import Dexie from 'dexie';
 import type { Table } from 'dexie';
 
+export interface UserStats {
+  current_sub_level: string;
+  highest_digits: number;
+}
+
 export interface UserProfile {
   id: string; // Default to "user" for single device usage
   age_months: number;
-  current_sub_level: string;
-  highest_digits: number;
+  stats: {
+    forward: UserStats;
+    backward: UserStats;
+    sequencing: UserStats;
+  };
   current_percentile: number;
   total_wm_score: number;
   settings: {
@@ -18,6 +26,7 @@ export interface TrialLog {
   trial_id: string;
   session_id: string;
   timestamp: string;
+  task_mode: 'forward' | 'backward' | 'sequencing';
   sub_level: string;
   displayed_sequence: number[];
   actual_time_sec: number;
