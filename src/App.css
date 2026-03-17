@@ -1,11 +1,23 @@
+:root {
+  --primary: #4facfe;
+  --primary-glow: rgba(79, 172, 254, 0.4);
+  --secondary: #00f2fe;
+  --bg-dark: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --error: #ef4444;
+}
+
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
-  background-color: #1a1a1a;
-  color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
 }
 
 #root {
@@ -18,51 +30,126 @@ html, body {
 
 .app-container {
   width: 100%;
-  max-width: 800px;
   height: 100vh;
-  max-height: 600px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
+  background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
 }
 
+/* Glassmorphism Screens */
 .start-screen, .result-screen {
   text-align: center;
-  padding: 2rem;
-  background: #2a2a2a;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  padding: 3rem;
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  max-width: 90%;
+  width: 450px;
 }
 
-.start-screen h1, .result-screen h2 {
-  margin-top: 0;
-  font-size: 2rem;
-  color: #4facfe;
+.start-screen h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
 }
 
-button {
-  background-color: #4facfe;
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  border-radius: 8px;
+.start-screen p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+/* Buttons */
+.mode-selection button {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.25rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 16px;
   cursor: pointer;
-  transition: background-color 0.2s;
-  margin-top: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-button:hover {
-  background-color: #00f2fe;
+.mode-selection button:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px var(--primary-glow);
 }
 
-.loading {
-  font-size: 1.5rem;
-  color: #888;
+.mode-selection button::after {
+  content: '→';
+  opacity: 0.5;
+  font-size: 1.2rem;
 }
 
+/* Result Stats */
+.stats-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1.25rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-card h3 {
+  margin: 0;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.stat-card .score {
+  font-size: 2.25rem;
+  font-weight: 800;
+  margin-top: 0.25rem;
+  color: var(--primary);
+}
+
+/* Progress Bar */
+.progress-bar-container {
+  margin: 2rem 0;
+}
+
+.progress-track {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+/* Canvas Styling */
 .game-canvas {
   width: 100%;
   height: 100%;
@@ -76,58 +163,6 @@ button:hover {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.5);
   touch-action: none;
-}
-
-.stats-container {
-  display: flex;
-  gap: 1rem;
-  margin: 2rem 0;
-}
-
-.stat-card {
-  background: #333;
-  padding: 1.5rem;
-  border-radius: 8px;
-  flex: 1;
-}
-
-.stat-card h3 {
-  margin-top: 0;
-  font-size: 1rem;
-  color: #aaa;
-}
-
-.stat-card .score {
-  font-size: 2rem;
-  font-weight: bold;
-  margin: 0;
-  color: #fff;
-}
-
-.progress-bar-container {
-  margin: 2rem 0;
-  text-align: left;
-}
-
-.progress-label {
-  font-size: 0.9rem;
-  color: #aaa;
-  margin-bottom: 0.5rem;
-}
-
-.progress-track {
-  width: 100%;
-  height: 20px;
-  background: #444;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
-  transition: width 1s ease-out;
+  -webkit-tap-highlight-color: transparent;
 }

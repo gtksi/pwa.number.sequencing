@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from './store';
 import { db } from './db/db';
@@ -6,6 +6,7 @@ import { setUserProfile } from './store/slices/userSlice';
 import { startGameSession } from './store/slices/gameSlice';
 import GameCanvas from './components/GameCanvas';
 import ResultScreen from './components/ResultScreen';
+import SettingsModal from './components/SettingsModal';
 import { useGameLogic } from './hooks/useGameLogic';
 import './App.css';
 
@@ -14,6 +15,7 @@ function App() {
   const { isLoading } = useSelector((state: RootState) => state.user);
   const { phase, currentTrial } = useSelector((state: RootState) => state.game);
   const { startNextTrial } = useGameLogic();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
     const initializeUser = async () => {
@@ -52,7 +54,18 @@ function App() {
     <div className="app-container">
       {phase === 'idle' && currentTrial === 0 && (
         <div className="start-screen">
-          <h1>数字の記憶と操作ゲーム</h1>
+          <button 
+            className="settings-trigger"
+            onClick={() => setIsSettingsOpen(true)}
+            style={{ 
+              position: 'absolute', top: '20px', right: '20px', 
+              padding: '10px', fontSize: '1.2rem', background: 'transparent',
+              border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px'
+            }}
+          >
+            ⚙️
+          </button>
+          <h1>数字の記憶と操作</h1>
           <p>ワーキングメモリートレーニング</p>
           <div className="mode-selection" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
             <button onClick={() => {
@@ -80,6 +93,8 @@ function App() {
       {isGameActive && <GameCanvas />}
 
       {phase === 'result' && <ResultScreen />}
+
+      {isSettingsOpen && <SettingsModal onClose={() => setIsSettingsOpen(false)} />}
     </div>
   );
 }

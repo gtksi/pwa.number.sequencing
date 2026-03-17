@@ -23,9 +23,14 @@ const userSlice = createSlice({
       if (state.profile) {
         state.profile = { ...state.profile, ...action.payload };
       }
+    },
+    updateSettings(state, action: PayloadAction<Partial<UserProfile['settings']>>) {
+      if (state.profile) {
+        state.profile.settings = { ...state.profile.settings, ...action.payload };
+      }
     }
   },
 });
 
-export const { setUserProfile, updateUserProfile } = userSlice.actions;
+export const { setUserProfile, updateUserProfile, updateSettings } = userSlice.actions;
 export default userSlice.reducer;
