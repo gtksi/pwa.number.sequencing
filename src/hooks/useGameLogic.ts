@@ -48,7 +48,7 @@ export const useGameLogic = () => {
     // Save to IndexedDB
     const trialLog = {
       trial_id: `t_${Date.now()}_${Math.floor(Math.random()*1000)}`,
-      session_id: `s_${new Date().toISOString().split('T')[0]}`,
+      session_id: `s_${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`,
       timestamp: new Date().toISOString(),
       task_mode: activeMode,
       sub_level: currentSubLevel,

@@ -273,11 +273,16 @@ const GameCanvas = () => {
                  } else {
                    dispatch(registerError());
                    let shakeCount = 0;
+                   card.eventMode = 'none';
                    const ticker = new PIXI.Ticker();
                    ticker.add(() => {
                      shakeCount++;
                      card.x = nextSlot.x + Math.sin(shakeCount * 0.8) * 15;
-                     if (shakeCount > 20) { ticker.destroy(); card.x = initialX; card.y = initialY; }
+                     if (shakeCount > 20) { 
+                       ticker.destroy(); 
+                       card.x = initialX; card.y = initialY; 
+                       card.eventMode = 'static';
+                     }
                    });
                    ticker.start();
                    return;

@@ -12,7 +12,9 @@ const ResultScreen = () => {
 
   useEffect(() => {
     const fetchTodayStats = async () => {
-      const todayPrefix = `s_${new Date().toISOString().split('T')[0]}`;
+      const d = new Date();
+      const localDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      const todayPrefix = `s_${localDate}`;
       const logs = await db.trialLogs.filter(log => log.session_id === todayPrefix).toArray();
       const score = logs.reduce((sum, log) => sum + log.fluency_score, 0);
       setTodayScore(Math.round(score * 10) / 10);
@@ -51,7 +53,7 @@ const ResultScreen = () => {
       </div>
 
       <button 
-        onPointerDown={() => dispatch(setPhase('idle'))}
+        onClick={() => dispatch(setPhase('idle'))}
         style={{ touchAction: 'manipulation' }}
       >
         トップへ戻る

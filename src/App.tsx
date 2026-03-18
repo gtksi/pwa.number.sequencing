@@ -56,7 +56,7 @@ function App() {
         <div className="start-screen">
           <button 
             className="settings-trigger"
-            onPointerDown={() => setIsSettingsOpen(true)}
+            onClick={() => setIsSettingsOpen(true)}
             style={{ 
               position: 'absolute', top: '20px', right: '20px', 
               padding: '10px', fontSize: '1.2rem', background: 'transparent',
@@ -69,19 +69,19 @@ function App() {
           <h1>数字の記憶と操作</h1>
           <p>ワーキングメモリートレーニング</p>
           <div className="mode-selection" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
-            <button onPointerDown={() => {
+            <button onClick={() => {
               dispatch(startGameSession({ taskMode: 'forward' }));
               startNextTrial('forward');
             }}>
               順唱 (Forward)
             </button>
-            <button onPointerDown={() => {
+            <button onClick={() => {
               dispatch(startGameSession({ taskMode: 'backward' }));
               startNextTrial('backward');
             }}>
               逆唱 (Backward)
             </button>
-            <button onPointerDown={() => {
+            <button onClick={() => {
               dispatch(startGameSession({ taskMode: 'sequencing' }));
               startNextTrial('sequencing');
             }}>

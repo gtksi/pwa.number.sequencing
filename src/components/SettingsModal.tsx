@@ -38,7 +38,7 @@ const SettingsModal = ({ onClose }: SettingsModalProps) => {
           </div>
           <button
             className={`toggle-switch ${user.profile.settings.spatial_mapping ? 'on' : 'off'}`}
-            onPointerDown={() => handleToggle('spatial_mapping')}
+            onClick={() => handleToggle('spatial_mapping')}
           >
             {user.profile.settings.spatial_mapping ? 'ON' : 'OFF'}
           </button>
@@ -51,13 +51,13 @@ const SettingsModal = ({ onClose }: SettingsModalProps) => {
           </div>
           <button
             className={`toggle-switch ${user.profile.settings.voice_assist ? 'on' : 'off'}`}
-            onPointerDown={() => handleToggle('voice_assist')}
+            onClick={() => handleToggle('voice_assist')}
           >
             {user.profile.settings.voice_assist ? 'ON' : 'OFF'}
           </button>
           </div>
 
-          <button className="close-button" onPointerDown={onClose}>
+          <button className="close-button" onClick={onClose}>
           閉じる
           </button>
           </div>
