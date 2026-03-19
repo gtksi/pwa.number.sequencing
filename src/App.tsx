@@ -20,23 +20,49 @@ function App() {
   useEffect(() => {
     const initializeUser = async () => {
       let user = await db.userProfile.get('user');
+      const defaultStats = {
+        forward: { current_sub_level: '1.1', highest_digits: 2 },
+        backward: { current_sub_level: '1.1', highest_digits: 2 },
+        sequencing: { current_sub_level: '1.1', highest_digits: 2 },
+      };
+      const defaultSettings = {
+        voice_assist: true,
+        spatial_mapping: true
+      };
+
       if (!user) {
         user = {
           id: 'user',
           age_months: 120, // default ~10 years old
-          stats: {
-            forward: { current_sub_level: '1.1', highest_digits: 2 },
-            backward: { current_sub_level: '1.1', highest_digits: 2 },
-            sequencing: { current_sub_level: '1.1', highest_digits: 2 },
-          },
+          stats: defaultStats,
           current_percentile: 50,
           total_wm_score: 0,
-          settings: {
-            voice_assist: true,
-            spatial_mapping: true
-          }
+          settings: defaultSettings
         };
         await db.userProfile.put(user);
+      } else {
+        // Schema healing for returning users
+        let needsUpdate = false;
+        if (!user.stats) {
+          user.stats = defaultStats;
+          needsUpdate = true;
+        } else {
+          if (!user.stats.forward) { user.stats.forward = defaultStats.forward; needsUpdate = true; }
+          if (!user.stats.backward) { user.stats.backward = defaultStats.backward; needsUpdate = true; }
+          if (!user.stats.sequencing) { user.stats.sequencing = defaultStats.sequencing; needsUpdate = true; }
+        }
+        if (!user.settings) {
+          user.settings = defaultSettings;
+          needsUpdate = true;
+        }
+        if (user.total_wm_score === undefined) {
+          user.total_wm_score = 0;
+          needsUpdate = true;
+        }
+
+        if (needsUpdate) {
+          await db.userProfile.put(user);
+        }
       }
       dispatch(setUserProfile(user));
     };

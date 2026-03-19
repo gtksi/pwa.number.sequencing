@@ -16,7 +16,7 @@ export const useGameLogic = () => {
     if (!user.profile) return;
     
     const activeMode = overrideMode || game.taskMode;
-    const currentSubLevel = user.profile.stats[activeMode].current_sub_level;
+    const currentSubLevel = user.profile.stats[activeMode]?.current_sub_level || '1.1';
     const levelDef = getSubLevelDef(currentSubLevel);
     
     // Generate a random sequence (1-9) without immediate repetitions
