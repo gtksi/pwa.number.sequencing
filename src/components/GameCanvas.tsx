@@ -250,7 +250,7 @@ const GameCanvas = () => {
              dragging = false;
              draggingPointerId = null;
              
-             app.stage.off('pointermove', onDragMove);
+             app.stage.off('globalpointermove', onDragMove);
              app.stage.off('pointerup', onDragEnd);
              app.stage.off('pointerupoutside', onDragEnd);
              app.stage.off('pointercancel', onDragEnd);
@@ -302,7 +302,7 @@ const GameCanvas = () => {
             card.zIndex = 100;
             sceneContainer.sortChildren();
             
-            app.stage.on('pointermove', onDragMove);
+            app.stage.on('globalpointermove', onDragMove);
             app.stage.on('pointerup', onDragEnd);
             app.stage.on('pointerupoutside', onDragEnd);
             app.stage.on('pointercancel', onDragEnd);
@@ -346,7 +346,7 @@ const GameCanvas = () => {
     };
   }, [dispatch]); // Stable dependencies to prevent re-initializing Pixi app
 
-  return <div ref={canvasRef} className="game-canvas" />;
+  return <div ref={canvasRef} className="game-canvas" style={{ touchAction: 'none' }} />;
 };
 
 export default GameCanvas;
