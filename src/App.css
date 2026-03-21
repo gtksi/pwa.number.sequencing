@@ -55,7 +55,7 @@ html, body {
 }
 
 .start-screen h1 {
-  font-size: 2.5rem;
+  font-size: clamp(1.5rem, 8vw, 2.5rem);
   font-weight: 800;
   margin-bottom: 0.5rem;
   background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
@@ -63,6 +63,9 @@ html, body {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.02em;
+  overflow-wrap: break-word;
+  word-break: normal;
+  line-height: 1.2;
 }
 
 .start-screen p {
@@ -173,10 +176,9 @@ html, body {
 /* Responsiveness */
 @media (max-width: 480px) {
   .start-screen, .result-screen {
-    padding: 2rem 1.5rem;
+    padding: 2rem 1.25rem;
   }
   .start-screen h1 {
-    font-size: 1.8rem;
     letter-spacing: normal;
   }
   .mode-selection button {
