@@ -250,10 +250,10 @@ const GameCanvas = () => {
              dragging = false;
              draggingPointerId = null;
              
-             app.stage.off('globalpointermove', onDragMove);
-             app.stage.off('pointerup', onDragEnd);
-             app.stage.off('pointerupoutside', onDragEnd);
-             app.stage.off('pointercancel', onDragEnd);
+             card.off('globalpointermove', onDragMove);
+             card.off('pointerup', onDragEnd);
+             card.off('pointerupoutside', onDragEnd);
+             card.off('pointercancel', onDragEnd);
 
              const nextSlot = slots.find(s => !s.filled);
              if (nextSlot) {
@@ -293,6 +293,7 @@ const GameCanvas = () => {
           };
 
           card.on('pointerdown', (e: PIXI.FederatedPointerEvent) => {
+            e.preventDefault();
             if (dragging) return;
             
             dragging = true;
@@ -302,10 +303,10 @@ const GameCanvas = () => {
             card.zIndex = 100;
             sceneContainer.sortChildren();
             
-            app.stage.on('globalpointermove', onDragMove);
-            app.stage.on('pointerup', onDragEnd);
-            app.stage.on('pointerupoutside', onDragEnd);
-            app.stage.on('pointercancel', onDragEnd);
+            card.on('globalpointermove', onDragMove);
+            card.on('pointerup', onDragEnd);
+            card.on('pointerupoutside', onDragEnd);
+            card.on('pointercancel', onDragEnd);
           });
 
           sceneContainer.addChild(card);
