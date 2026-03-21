@@ -64,7 +64,7 @@ export const useGameLogic = () => {
 
     // Fetch recent 3 scores for DDA for this mode
     const recentLogs = await db.trialLogs.orderBy('timestamp').reverse().toArray();
-    const recentModeLogs = recentLogs.filter((l: any) => l.task_mode === activeMode).slice(0, 3);
+    const recentModeLogs = recentLogs.filter((l: { task_mode: string; fluency_score: number }) => l.task_mode === activeMode).slice(0, 3);
     const recentScores = recentModeLogs.map(l => l.fluency_score);
     const nextLevel = determineNextLevel(currentSubLevel, recentScores);
 

@@ -1,7 +1,7 @@
 {
   "name": "temp-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "homepage": "https://gtksi.github.io/pwa.number.sequencing/",
   "scripts": {
