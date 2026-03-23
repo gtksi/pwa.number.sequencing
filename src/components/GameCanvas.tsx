@@ -49,6 +49,13 @@ const GameCanvas = () => {
 
       if (canvasRef.current) {
         canvasRef.current.appendChild(app.canvas as unknown as Node);
+        // CRITICAL: Prevent browser from interpreting touch-move as scroll/pan
+        // which would fire pointercancel and kill the drag.
+        // PixiJS's EventSystem does NOT call preventDefault on pointermove,
+        // and passive listeners (the browser default) ignore preventDefault.
+        const canvasEl = app.canvas as unknown as HTMLCanvasElement;
+        canvasEl.addEventListener('touchmove', (e) => { e.preventDefault(); }, { passive: false });
+        canvasEl.addEventListener('touchstart', (e) => { e.preventDefault(); }, { passive: false });
       }
       pixiApp.current = app;
 
@@ -250,7 +257,7 @@ const GameCanvas = () => {
              dragging = false;
              draggingPointerId = null;
              
-             app.stage.off('pointermove', onDragMove);
+             app.stage.off('globalpointermove', onDragMove);
              app.stage.off('pointerup', onDragEnd);
              app.stage.off('pointerupoutside', onDragEnd);
              app.stage.off('pointercancel', onDragEnd);
@@ -302,7 +309,7 @@ const GameCanvas = () => {
             card.zIndex = 100;
             sceneContainer.sortChildren();
             
-            app.stage.on('pointermove', onDragMove);
+            app.stage.on('globalpointermove', onDragMove);
             app.stage.on('pointerup', onDragEnd);
             app.stage.on('pointerupoutside', onDragEnd);
             app.stage.on('pointercancel', onDragEnd);
