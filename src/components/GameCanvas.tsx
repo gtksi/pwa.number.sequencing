@@ -243,24 +243,26 @@ const GameCanvas = () => {
           let dragging = false;
           let dragStartPoint = { x: 0, y: 0 };
           let cardStartPoint = { x: 0, y: 0 };
-          let draggingPointerId: number | null = null;
+
+          // Cleanup function: unconditionally removes all drag listeners
+          const cleanupDragListeners = () => {
+            app.stage.off('globalpointermove', onDragMove);
+            app.stage.off('pointerup', onDragEnd);
+            app.stage.off('pointerupoutside', onDragEnd);
+            app.stage.off('pointercancel', onDragEnd);
+          };
 
           const onDragMove = (e: PIXI.FederatedPointerEvent) => {
-            if (dragging && e.pointerId === draggingPointerId) {
+            if (dragging) {
                card.x = cardStartPoint.x + (e.global.x - dragStartPoint.x);
                card.y = cardStartPoint.y + (e.global.y - dragStartPoint.y);
             }
           };
 
-          const onDragEnd = (e: PIXI.FederatedPointerEvent) => {
-             if (!dragging || e.pointerId !== draggingPointerId) return;
+          const onDragEnd = () => {
+             if (!dragging) return;
              dragging = false;
-             draggingPointerId = null;
-             
-             app.stage.off('globalpointermove', onDragMove);
-             app.stage.off('pointerup', onDragEnd);
-             app.stage.off('pointerupoutside', onDragEnd);
-             app.stage.off('pointercancel', onDragEnd);
+             cleanupDragListeners();
 
              const nextSlot = slots.find(s => !s.filled);
              if (nextSlot) {
@@ -300,10 +302,14 @@ const GameCanvas = () => {
           };
 
           card.on('pointerdown', (e: PIXI.FederatedPointerEvent) => {
-            if (dragging) return;
+            // Safety: force cleanup any stale drag state
+            if (dragging) {
+              cleanupDragListeners();
+              dragging = false;
+              card.x = initialX; card.y = initialY;
+            }
             
             dragging = true;
-            draggingPointerId = e.pointerId;
             dragStartPoint = { x: e.global.x, y: e.global.y };
             cardStartPoint = { x: card.x, y: card.y };
             card.zIndex = 100;
