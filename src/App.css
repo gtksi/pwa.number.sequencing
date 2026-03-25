@@ -187,3 +187,148 @@ html, body {
     font-size: 1rem;
   }
 }
+
+/* ==================== Recall Phase ==================== */
+.recall-phase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  max-width: 560px;
+  padding: 1.5rem;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.recall-instruction {
+  font-size: 1.2rem;
+  color: var(--text-sub);
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
+}
+
+/* Slots row */
+.recall-slots {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.recall-slot {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.recall-slot.active {
+  border-color: rgba(79, 172, 254, 0.5);
+  box-shadow: 0 0 16px rgba(79, 172, 254, 0.15);
+}
+
+.recall-slot.filled {
+  background: rgba(79, 172, 254, 0.15);
+  border-color: rgba(79, 172, 254, 0.4);
+  animation: slotPop 0.3s ease;
+}
+
+@keyframes slotPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+.recall-slot-number {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* Cards row */
+.recall-cards {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.recall-card {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: #1e293b;
+  border: 2px solid rgba(79, 172, 254, 0.45);
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 800;
+  font-family: 'Inter', -apple-system, sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.recall-card.available {
+  box-shadow: 0 4px 16px rgba(79, 172, 254, 0.1);
+}
+
+.recall-card.available:active {
+  transform: scale(0.92);
+  background: rgba(79, 172, 254, 0.2);
+}
+
+.recall-card.placed {
+  opacity: 0.2;
+  transform: scale(0.85);
+  pointer-events: none;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.recall-card.shaking {
+  animation: cardShake 0.4s ease;
+  border-color: #f87171;
+  background: rgba(248, 113, 113, 0.15);
+  pointer-events: none;
+}
+
+@keyframes cardShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+
+.recall-card.disabled {
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* Responsive recall */
+@media (max-width: 400px) {
+  .recall-slot, .recall-card {
+    width: 52px;
+    height: 52px;
+    font-size: 1.3rem;
+  }
+  .recall-slot-number {
+    font-size: 1.3rem;
+  }
+  .recall-slots, .recall-cards {
+    gap: 8px;
+  }
+}
+

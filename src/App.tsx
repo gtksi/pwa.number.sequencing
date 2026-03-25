@@ -5,6 +5,7 @@ import { db } from './db/db';
 import { setUserProfile } from './store/slices/userSlice';
 import { startGameSession } from './store/slices/gameSlice';
 import GameCanvas from './components/GameCanvas';
+import RecallPhase from './components/RecallPhase';
 import ResultScreen from './components/ResultScreen';
 import SettingsModal from './components/SettingsModal';
 import { useGameLogic } from './hooks/useGameLogic';
@@ -74,7 +75,7 @@ function App() {
     return <div className="loading">Loading...</div>;
   }
 
-  const isGameActive = phase === 'memorize' || phase === 'recall' || (phase === 'idle' && currentTrial > 0);
+  const isMemorizing = phase === 'memorize' || (phase === 'idle' && currentTrial > 0);
 
   return (
     <div className="app-container">
@@ -117,7 +118,8 @@ function App() {
         </div>
       )}
       
-      {isGameActive && <GameCanvas />}
+      {isMemorizing && <GameCanvas />}
+      {phase === 'recall' && <RecallPhase />}
 
       {phase === 'result' && <ResultScreen />}
 
