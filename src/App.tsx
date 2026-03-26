@@ -14,7 +14,7 @@ import './App.css';
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading } = useSelector((state: RootState) => state.user);
-  const { phase, currentTrial } = useSelector((state: RootState) => state.game);
+  const { phase, currentTrial, maxTrials } = useSelector((state: RootState) => state.game);
   const { startNextTrial } = useGameLogic();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -70,6 +70,16 @@ function App() {
 
     initializeUser();
   }, [dispatch]);
+
+  // Handle automatic transition to next trial after a short delay
+  useEffect(() => {
+    if (phase === 'idle' && currentTrial > 0 && currentTrial < maxTrials) {
+      const timer = setTimeout(() => {
+        startNextTrial();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [phase, currentTrial, maxTrials, startNextTrial]);
 
   if (isLoading) {
     return <div className="loading">Loading...</div>;

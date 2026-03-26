@@ -3,14 +3,12 @@ import * as PIXI from 'pixi.js';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../store';
 import { transitionToRecall } from '../store/slices/gameSlice';
-import { useGameLogic } from '../hooks/useGameLogic';
 import { speakNumber } from '../utils/audio';
 
 const GameCanvas = () => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const pixiApp = useRef<PIXI.Application | null>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const { startNextTrial } = useGameLogic();
   
   const game = useSelector((state: RootState) => state.game);
   const user = useSelector((state: RootState) => state.user);
@@ -20,9 +18,6 @@ const GameCanvas = () => {
   stateRef.current = game;
   const userRef = useRef(user);
   userRef.current = user;
-
-  const startNextTrialRef = useRef(startNextTrial);
-  startNextTrialRef.current = startNextTrial;
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -145,12 +140,6 @@ const GameCanvas = () => {
         if (currentPhase !== lastPhase) {
           lastPhase = currentPhase;
           if (currentPhase === 'memorize') renderMemorizePhase();
-          else if (currentPhase === 'idle') {
-            sceneContainer.removeChildren();
-            if (stateRef.current.currentTrial > 0 && stateRef.current.currentTrial < stateRef.current.maxTrials) {
-               setTimeout(() => startNextTrialRef.current(), 1000);
-            }
-          }
         }
       });
       
