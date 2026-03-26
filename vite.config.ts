@@ -10,7 +10,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons.svg'],
       manifest: {
-        name: '数字の逆さま記憶ゲーム',
+        name: '数字の記憶と操作',
         short_name: 'WM Training',
         description: 'ワーキングメモリーを鍛えるトレーニングアプリ',
         theme_color: '#ffffff',
