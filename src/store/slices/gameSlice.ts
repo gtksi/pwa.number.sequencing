@@ -73,9 +73,13 @@ const gameSlice = createSlice({
     },
     setPhase(state, action: PayloadAction<GamePhase>) {
       state.phase = action.payload;
+    },
+    resetSession(state) {
+      state.phase = 'idle';
+      state.currentTrial = 0;
     }
   },
 });
 
-export const { startGameSession, startTrial, transitionToRecall, registerInput, registerError, completeTrial, setPhase } = gameSlice.actions;
+export const { startGameSession, startTrial, transitionToRecall, registerInput, registerError, completeTrial, setPhase, resetSession } = gameSlice.actions;
 export default gameSlice.reducer;

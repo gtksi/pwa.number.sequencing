@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../store';
-import { setPhase } from '../store/slices/gameSlice';
+import { resetSession } from '../store/slices/gameSlice';
 import { calculatePercentile } from '../utils/scoring';
 import { db } from '../db/db';
 
@@ -53,7 +53,7 @@ const ResultScreen = () => {
       </div>
 
       <button 
-        onClick={() => dispatch(setPhase('idle'))}
+        onClick={() => dispatch(resetSession())}
         style={{ touchAction: 'manipulation' }}
       >
         トップへ戻る
